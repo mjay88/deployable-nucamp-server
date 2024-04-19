@@ -9,6 +9,21 @@ const usersRouter = require("./routes/users");
 const campsiteRouter = require("./routes/campsiteRouter");
 const promotionRouter = require("./routes/promotionsRouter");
 const partnerRouter = require("./routes/partnersRouter");
+const mongoose = require("mongoose");
+
+const url =
+	"mongodb://127.0.0.1:27017/nucampsite?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.2.4";
+const connect = mongoose.connect(url, {
+	useCreateIndex: true,
+	useFindAndModify: false,
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+});
+
+connect.then(
+	() => console.log("Connected correctly to server"),
+	(err) => console.log(err)
+);
 
 var app = express();
 
