@@ -5,13 +5,15 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const session = require("express-session");
 const FileStore = require("session-file-store")(session);
+const mongoose = require("mongoose");
+const passport = require("passport");
+const authenticate = require("./authenticate");
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const campsiteRouter = require("./routes/campsiteRouter");
 const promotionRouter = require("./routes/promotionsRouter");
 const partnerRouter = require("./routes/partnersRouter");
-const mongoose = require("mongoose");
 
 const url =
 	"mongodb://127.0.0.1:27017/nucampsite?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.2.4";
@@ -48,43 +50,8 @@ app.use(
 		store: new FileStore(),
 	})
 );
-
-// function auth(req, res, next) {
-// 	console.log(req.session);
-
-// 	if (!req.session.user) {
-// 		const authHeader = req.headers.authorization;
-// 		if (!authHeader) {
-// 			const err = new Error("You are not authenticated!");
-// 			res.setHeader("WWW-Authenticate", "Basic");
-// 			err.status = 401;
-// 			return next(err);
-// 		}
-
-// 		const auth = Buffer.from(authHeader.split(" ")[1], "base64")
-// 			.toString()
-// 			.split(":");
-// 		const user = auth[0];
-// 		const pass = auth[1];
-// 		if (user === "admin" && pass === "password") {
-// 			req.session.user = "admin";
-// 			return next(); // authorized
-// 		} else {
-// 			const err = new Error("You are not authenticated!");
-// 			res.setHeader("WWW-Authenticate", "Basic");
-// 			err.status = 401;
-// 			return next(err);
-// 		}
-// 	} else {
-// 		if (req.session.user === "admin") {
-// 			return next();
-// 		} else {
-// 			const err = new Error("You are not authenticated!");
-// 			err.status = 401;
-// 			return next(err);
-// 		}
-// 	}
-// }
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -93,21 +60,16 @@ app.use("/users", usersRouter);
 app.use("/campsites", campsiteRouter);
 app.use("/promotions", promotionRouter);
 app.use("/partners", partnerRouter);
-function auth(req, res, next) {
-	console.log(req.session);
 
-	if (!req.session.user) {
+function auth(req, res, next) {
+	console.log(req.user);
+
+	if (!req.user) {
 		const err = new Error("You are not authenticated!");
 		err.status = 401;
 		return next(err);
 	} else {
-		if (req.session.user === "authenticated") {
-			return next();
-		} else {
-			const err = new Error("You are not authenticated!");
-			err.status = 401;
-			return next(err);
-		}
+		return next();
 	}
 }
 
