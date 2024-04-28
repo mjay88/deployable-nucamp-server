@@ -17,9 +17,15 @@ campsiteRouter
 			.catch((err) => next(err));
 	})
 	.post(authenticate.verifyUser, authenticate.verifyUser, (req, res, next) => {
+		// console.log(req.body.comments, "req.body");
+		// const newCampsite = { ...req.body, comments: [] };
+		// console.log(newCampsite, "new Campsite");
+		// const comments = [...req.body.comments];
+		// console.log(comments);
+		//need to admin creates campsite with existing comments
 		Campsite.create(req.body)
 			.then((campsite) => {
-				console.log("Campsite Created ", campsite);
+				console.log(campsite, "campsite created");
 				res.statusCode = 200;
 				res.setHeader("Content-Type", "application/json");
 				res.json(campsite);
@@ -258,6 +264,7 @@ campsiteRouter
 							res.json(campsite);
 						})
 						.catch((err) => next(err));
+					// return next();
 				} else if (!campsite) {
 					err = new Error(`Campsite ${req.params.campsiteId} not found`);
 					err.status = 404;
