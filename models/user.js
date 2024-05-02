@@ -15,6 +15,9 @@ const userSchema = new Schema({
 		type: Boolean,
 		default: false,
 	},
+	_id: {
+		type: mongoose.Schema.Types.Mixed,
+	},
 });
 userSchema.plugin(passportLocalMongoose);
 
