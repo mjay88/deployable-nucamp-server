@@ -33,7 +33,7 @@ favoriteRouter
 						const campsitesToAdd = req.body;
 						campsitesToAdd.forEach((campsite) => {
 							if (!favorite.campsites.includes(campsite._id)) {
-								favorite.campsites.push(campsite);
+								favorite.campsites.unshift(campsite);
 							} else {
 								console.log("campsite already exists in favorites");
 							}
@@ -45,8 +45,7 @@ favoriteRouter
 							res.json(favorite);
 						});
 					} else {
-						// req.body.user = req.user._id;
-						console.log(req.body, "req.body");
+						// console.log(req.body, "req.body");
 
 						Favorite.create({
 							user: req.user._id,
@@ -110,7 +109,7 @@ favoriteRouter
 					);
 
 					if (!favorite.campsites.includes(campsiteToAdd._id)) {
-						favorite.campsites.push(campsiteToAdd);
+						favorite.campsites.unshift(campsiteToAdd);
 					} else {
 						console.log("campsite already exists in favorites");
 						//error handling?
